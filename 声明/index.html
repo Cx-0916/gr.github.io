@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cc07个人网站</title>
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding-top: 80px;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding-left: 20px;
+            padding-right: 20px;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 120px;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ddd;
+            transition: transform 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar .nickname {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: #0056b3;
+        }
+
+        .nav-links a.active {
+            background-color: #7241fa;
+        }
+
+        /* 内容区域 */
+        .content {
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .content h1 {
+            margin: 25px 0;
+            color: #333;
+            font-size: 1.8rem;
+        }
+
+        .hint {
+            color: #666;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+
+        .contact-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .contact-card {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .contact-icon {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 120px;
+            cursor: pointer;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            padding: 5px;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .contact-icon:hover {
+            transform: scale(1.05);
+            border-color: #007bff;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.1);
+        }
+
+        .qr-wrapper {
+            width: 100%;
+            display: none;
+        }
+
+        .qr-code {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            border: 2px solid #eee;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            padding: 10px;
+        }
+
+        /* 声明区块 */
+        .statement-block {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            font-size: 0.9rem;
+            color: #333;
+            z-index: 90;
+            cursor: move;
+            user-select: none;
+        }
+
+        /* 关闭按钮 */
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            width: 28px;
+            height: 28px;
+            border: none;
+            background-color: transparent;
+            color: #999;
+            font-size: 1.6rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.2s ease;
+            z-index: 92;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+
+        .close-btn:hover {
+            color: #dc3545;
+            outline: none;
+        }
+
+        .statement-block p {
+            margin-bottom: 8px;
+            padding-right: 35px;
+        }
+
+        .statement-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 手机端提示 */
+        .pc-tip {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff8e6;
+            color: #d97706;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 0.9rem;
+            border-top: 1px solid #ffeeba;
+            z-index: 99;
+        }
+
+        /* 手机端适配 */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 75px;
+                padding-left: 15px;
+                padding-right: 15px;
+                padding-bottom: 100px;
+            }
+
+            .navbar {
+                height: 65px;
+                padding: 0 15px;
+            }
+
+            .logo-container {
+                gap: 8px;
+            }
+
+            .avatar {
+                width: 36px;
+                height: 36px;
+            }
+
+            .navbar .nickname {
+                font-size: 1.2rem;
+                white-space: nowrap;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+
+            .content h1 {
+                font-size: 1.4rem;
+                margin: 18px 0;
+                line-height: 1.4;
+            }
+
+            .content p {
+                font-size: 0.95rem;
+                color: #444;
+                margin-bottom: 12px;
+            }
+
+            .hint {
+                font-size: 0.85rem;
+                margin: 12px 0;
+            }
+
+            .contact-container {
+                gap: 25px;
+                margin: 20px 0;
+            }
+
+            .contact-card {
+                width: 100%;
+                max-width: 320px;
+                gap: 12px;
+            }
+
+            .contact-icon {
+                max-height: 100px;
+            }
+
+            .qr-code {
+                padding: 8px;
+            }
+
+            .statement-block {
+                max-width: 250px;
+                font-size: 0.85rem;
+                padding: 12px 15px;
+                bottom: 50px;
+                right: 15px;
+            }
+
+            .pc-tip {
+                display: block;
+                font-size: 0.8rem;
+                padding: 8px 12px;
+                line-height: 1.4;
+            }
+        }
+
+        /* 超小屏手机适配 */
+        @media (max-width: 360px) {
+            .navbar .nickname {
+                font-size: 1.1rem;
+            }
+
+            .nav-links {
+                gap: 8px;
+            }
+
+            .nav-links a {
+                padding: 5px 10px;
+                font-size: 0.85rem;
+            }
+
+            .content h1 {
+                font-size: 1.3rem;
+            }
+
+            .statement-block {
+                max-width: 220px;
+                font-size: 0.8rem;
+                padding: 10px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="抖音头像.png" alt="Cc07的头像" class="avatar">
+            <a href="index.html" class="nickname">Cc07</a>
+        </div>
+        <div class="nav-links">
+            <a href="../index.html">首页</a>
+            <a href="index.html" class="active">声明</a>
+        </div>
+    </nav>
+
+    <!-- 内容区域 -->
+    <div class="content">
+        <h1>需要刻字请添加下方联系方式</h1>
+        <p class="hint">点击图标显示对应二维码，点击另一个自动切换</p>
+
+        <div class="contact-container">
+            <!-- QQ联系方式 -->
+            <div class="contact-card">
+                <p class="hint">QQ联系</p>
+                <img src="QQ.png" alt="QQ图标" class="contact-icon" id="qqIcon">
+                <div class="qr-wrapper" id="qqQr">
+                    <img src="QQ二维码.jpg" alt="QQ二维码" class="qr-code">
+                </div>
+            </div>
+
+            <!-- 微信联系方式 -->
+            <div class="contact-card">
+                <p class="hint">微信联系</p>
+                <img src="wx.png" alt="微信图标" class="contact-icon" id="wxIcon">
+                <div class="qr-wrapper" id="wxQr">
+                    <img src="WX.jpg" alt="微信二维码" class="qr-code">
+                </div>
+            </div>
+        </div>
+
+        <!-- 附加信息 -->
+        <p>抖音号也是我一个QQ，但是不怎么用，最好不要添加这个联系方式，添加首页的或者上方的联系方式。</p>
+        <p>手机访问会卡就去<span style="color: blue;">首页直接复制联系方式</span>！！！</p>
+        <p>
+            在首页点击抖音号可以复制，想看作品可以去抖音看！
+            <span style="color: pink;">接定制🆓！</span>
+            <br>
+            在抖音作品就看的出来，本人做的基本是<span style="color: red;">秋霜</span>(就是进游戏默认手里抓着那把)。
+        </p>
+    </div>
+
+    <!-- 可拖动+可关闭的声明区块 -->
+    <div class="statement-block" id="statementBlock">
+        <button class="close-btn" id="closeBtn">&times;</button>
+        <p style="color: red;">本网站的所有内容均为个人创作，不涉及任何商业用途。</p>
+        <p style="color: red;">本网站的所有内容均为个人创作，不涉及任何商业用途。</p>
+        <p style="color: red;">本网站的所有内容均为个人创作，不涉及任何商业用途。</p>
+    </div>
+
+    <!-- 电脑访问提示 -->
+    <div class="pc-tip">
+        建议使用电脑访问本网站，以获得更流畅的浏览体验和更完整的功能展示，手机端可能存在页面显示不全、加载缓慢等问题。
+    </div>
+
+    <!-- 完整JS逻辑 -->
+    <script>
+        // 1. 二维码切换功能
+        const qqIcon = document.getElementById('qqIcon');
+        const qqQr = document.getElementById('qqQr');
+        const wxIcon = document.getElementById('wxIcon');
+        const wxQr = document.getElementById('wxQr');
+
+        qqIcon.addEventListener('click', () => {
+            qqQr.style.display = qqQr.style.display === 'none' || qqQr.style.display === '' ? 'block' : 'none';
+            wxQr.style.display = 'none';
+        });
+
+        wxIcon.addEventListener('click', () => {
+            wxQr.style.display = wxQr.style.display === 'none' || wxQr.style.display === '' ? 'block' : 'none';
+            qqQr.style.display = 'none';
+        });
+
+        // 点击二维码关闭
+        qqQr.addEventListener('click', () => { qqQr.style.display = 'none'; });
+        wxQr.addEventListener('click', () => { wxQr.style.display = 'none'; });
+
+        // 2. 声明块关闭功能（同时支持PC和移动端）
+        const closeBtn = document.getElementById('closeBtn');
+        const statementBlock = document.getElementById('statementBlock');
+
+        // PC端点击关闭
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            statementBlock.style.display = 'none';
+        });
+
+        // 移动端触摸关闭
+        closeBtn.addEventListener('touchstart', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            statementBlock.style.display = 'none';
+        }, { passive: false });
+
+        // 3. 声明块拖动功能
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        // PC端鼠标拖动
+        statementBlock.addEventListener('mousedown', (e) => {
+            if (e.target !== closeBtn) {
+                isDragging = true;
+                offsetX = e.clientX - statementBlock.getBoundingClientRect().left;
+                offsetY = e.clientY - statementBlock.getBoundingClientRect().top;
+                statementBlock.style.cursor = 'grabbing';
+            }
+        });
+
+        // 移动端触摸拖动
+        statementBlock.addEventListener('touchstart', (e) => {
+            if (e.target !== closeBtn) {
+                isDragging = true;
+                const touch = e.touches[0];
+                offsetX = touch.clientX - statementBlock.getBoundingClientRect().left;
+                offsetY = touch.clientY - statementBlock.getBoundingClientRect().top;
+                statementBlock.style.cursor = 'grabbing';
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // 拖动过程（兼容PC和移动端）
+        function handleDragMove(e) {
+            if (!isDragging) return;
+
+            let clientX, clientY;
+            if (e.type === 'mousemove') {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            } else {
+                const touch = e.touches[0];
+                clientX = touch.clientX;
+                clientY = touch.clientY;
+            }
+
+            // 限制在屏幕内
+            const maxX = window.innerWidth - statementBlock.offsetWidth;
+            const maxY = window.innerHeight - statementBlock.offsetHeight;
+            const newX = Math.max(0, Math.min(clientX - offsetX, maxX));
+            const newY = Math.max(0, Math.min(clientY - offsetY, maxY));
+
+            // 设置新位置
+            statementBlock.style.left = `${newX}px`;
+            statementBlock.style.top = `${newY}px`;
+            statementBlock.style.right = 'auto';
+            statementBlock.style.bottom = 'auto';
+        }
+
+        // 绑定拖动事件
+        document.addEventListener('mousemove', handleDragMove);
+        document.addEventListener('touchmove', handleDragMove, { passive: false });
+
+        // 结束拖动
+        function endDrag() {
+            isDragging = false;
+            statementBlock.style.cursor = 'move';
+        }
+
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
+    </script>
+</body>
+
+</html>

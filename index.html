@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cc07个人网站</title>
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding-top: 80px;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding-left: 15px;
+            padding-right: 15px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* 导航栏：移动端简化布局 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 头像：移动端缩小 */
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ddd;
+            transition: transform 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        /* 昵称：移动端适配字体 */
+        .navbar .nickname {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        /* 导航链接：移动端缩小按钮 */
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            background-color: #0056b3;
+        }
+
+        .nav-links a.active {
+            background-color: #7241fa;
+            border: 0px solid #218838;
+        }
+
+        .nav-links a.active:hover {
+            background-color: #0056b3;
+        }
+
+        /* 内容区域：移动端居中+限制宽度 */
+        .content {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px 0;
+        }
+
+        /* 标题：移动端缩小+减少间距 */
+        .content h1 {
+            margin: 18px 0;
+            color: #333;
+            font-size: 1.4rem;
+            line-height: 1.4;
+        }
+
+        /* 正文：移动端优化可读性 */
+        .content p {
+            font-size: 0.95rem;
+            color: #444;
+            margin-bottom: 12px;
+        }
+
+        /* 联系方式：加粗方便点击识别 */
+        .contact-link {
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+
+        .contact-link:hover {
+            color: #0056b3;
+        }
+
+        /* 抖音号样式 */
+        .douyin-id {
+            cursor: pointer;
+            color: #007bff;
+            position: relative;
+            display: inline-block;
+            padding: 2px 5px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .douyin-id:hover {
+            color: #0056b3;
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+
+        /* 复制提示框：移动端避开导航栏 */
+        .copy-toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background-color: #000;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .copy-toast.error {
+            background-color: #dc3545;
+            box-shadow: 0 3px 10px rgba(220, 53, 69, 0.2);
+        }
+
+        /* 抖音图标：固定大小适配移动端 */
+        .image-wrapper {
+            margin: 12px 0;
+            display: inline-block;
+        }
+
+        .douyin-img {
+            width: 80px;
+            height: auto;
+            cursor: pointer;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            padding: 5px;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .douyin-img:hover {
+            transform: scale(1.05);
+            border-color: #007bff;
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.1);
+        }
+
+        /* 图片展示：移动端自适应屏幕 */
+        .display-images {
+            margin: 20px auto 0;
+            max-width: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .homepage-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: none;
+            border: 2px solid #eee;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: opacity 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        /* 扫一扫图片：适配手机扫码尺寸 */
+        .scan-image {
+            max-width: 220px;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: none;
+            border: 2px solid #eee;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: opacity 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .display-image.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        /* 图标按钮：移动端适配布局 */
+        .icon-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .hint {
+            color: #666;
+            margin: 12px 0;
+            font-size: 0.85rem;
+        }
+
+        /* 手机访问提示：仅移动端显示 */
+        .mobile-tip {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff8e6;
+            color: #d97706;
+            text-align: center;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            border-top: 1px solid #ffeeba;
+            z-index: 999;
+            line-height: 1.4;
+        }
+
+        /* 响应式核心：768px以下手机适配 */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 75px;
+                padding-bottom: 60px;
+                /* 为底部提示留空间 */
+            }
+
+            .navbar {
+                height: 65px;
+            }
+
+            .navbar .nickname {
+                font-size: 1.1rem;
+            }
+
+            .nav-links a {
+                padding: 5px 10px;
+                font-size: 0.85rem;
+            }
+
+            .content h1 {
+                font-size: 1.3rem;
+                margin: 15px 0;
+            }
+
+            .scan-image {
+                max-width: 200px;
+            }
+
+            .icon-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .mobile-tip {
+                display: block;
+            }
+
+            .copy-toast {
+                top: 70px;
+            }
+        }
+
+        /* 超小屏手机（360px以下）额外适配 */
+        @media (max-width: 360px) {
+            .navbar .nickname {
+                font-size: 1rem;
+            }
+
+            .nav-links {
+                gap: 8px;
+            }
+
+            .content h1 {
+                font-size: 1.2rem;
+            }
+
+            .douyin-img {
+                width: 70px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="抖音头像.png" alt="Cc07的头像" class="avatar">
+            <a href="index.html" class="nickname">Cc07</a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="active">首页</a>
+            <a href="./声明/index.html">声明</a>
+        </div>
+    </nav>
+
+    <!-- 复制提示框 -->
+    <div class="copy-toast" id="copyToast">复制成功！</div>
+
+    <!-- 内容区域 -->
+    <div class="content">
+        <h1>欢迎来到Cc07的个人网站</h1>
+        <p>手机或者电脑<span style="color: blue;">第一次访问我的网站都会卡，加载缓慢的问题</span>，理解一下，本人还是大学生，没有买服务器，网站是托管在github上面的</p>
+        <p style="color: aqua;">本网站是关于制作定制刀的，需要秋霜刻字添加我即可<br>点击下方QQ或WX即可复制并添加我的联系方式</p>
+
+        <h1><span class="contact-link" data-copy="2679928465">QQ:2679928465</span></h1>
+        <h1><span class="contact-link" data-copy="18170378345">WX:18170378345</span></h1>
+
+        <!-- 抖音相关内容 -->
+        <h1>
+            <span class="douyin-id" id="douyinId">抖音号:3125965086x</span>
+        </h1>
+        <h1>没错，这个就是我</h1>
+
+        <p class="hint">点击下方图标查看相应内容</p>
+
+        <!-- 图标按钮容器 -->
+        <div class="icon-buttons">
+            <div class="image-wrapper">
+                <img src="抖音.png" alt="抖音图标（查看主页）" class="douyin-img" id="homepageBtn">
+                <p class="hint">点击查看抖音主页</p>
+            </div>
+            <div class="image-wrapper">
+                <img src="抖音.png" alt="抖音图标（扫一扫）" class="douyin-img" id="scanBtn">
+                <p class="hint">点击查看扫一扫</p>
+            </div>
+        </div>
+
+        <!-- 图片展示区域 -->
+        <div class="display-images">
+            <img src="抖音主页.png" alt="抖音主页展示" class="display-image homepage-image" id="homepageImg">
+            <img src="扫一扫.jpg" alt="抖音扫一扫" class="display-image scan-image" id="scanImg">
+        </div>
+    </div>
+
+    <!-- 手机访问提示 -->
+    <div class="mobile-tip">
+        建议使用电脑访问本网站，以获得更流畅的浏览体验和更完整的功能展示，手机端可能存在页面显示不全、加载缓慢等问题。
+    </div>
+
+    <!-- 完整JS功能：复制+图片切换 -->
+    <script>
+        // 1. 联系方式（QQ/WX）复制功能
+        const contactLinks = document.querySelectorAll('.contact-link');
+        const copyToast = document.getElementById('copyToast');
+
+        contactLinks.forEach(link => {
+            link.addEventListener('click', function () {
+                const copyText = this.getAttribute('data-copy');
+                // 适配移动端剪贴板，兼容大部分手机浏览器
+                navigator.clipboard.writeText(copyText)
+                    .then(() => {
+                        copyToast.textContent = '复制成功！';
+                        copyToast.className = 'copy-toast show';
+                        // 提示框3秒后自动隐藏
+                        setTimeout(() => copyToast.classList.remove('show'), 3000);
+                    })
+                    .catch(err => {
+                        console.error('复制失败:', err);
+                        copyToast.textContent = '复制失败，请手动复制！';
+                        copyToast.className = 'copy-toast error show';
+                        setTimeout(() => copyToast.classList.remove('show'), 3000);
+                    });
+            });
+        });
+
+        // 2. 抖音号复制功能
+        const douyinId = document.getElementById('douyinId');
+        douyinId.addEventListener('click', () => {
+            // 提取纯抖音号（去掉"抖音号:"前缀）
+            const pureId = douyinId.textContent.trim().replace('抖音号:', '');
+            navigator.clipboard.writeText(pureId)
+                .then(() => {
+                    copyToast.textContent = '抖音号已复制！';
+                    copyToast.className = 'copy-toast show';
+                    setTimeout(() => copyToast.classList.remove('show'), 3000);
+                })
+                .catch(err => {
+                    console.error('复制失败:', err);
+                    copyToast.textContent = '复制失败，请手动复制！';
+                    copyToast.className = 'copy-toast error show';
+                    setTimeout(() => copyToast.classList.remove('show'), 3000);
+                });
+        });
+
+        // 3. 图片显示/隐藏切换（移动端点击交互优化）
+        const homepageBtn = document.getElementById('homepageBtn');
+        const scanBtn = document.getElementById('scanBtn');
+        const homepageImg = document.getElementById('homepageImg');
+        const scanImg = document.getElementById('scanImg');
+
+        // 点击"查看抖音主页"图标
+        homepageBtn.addEventListener('click', () => {
+            homepageImg.classList.toggle('visible');
+            // 显示主页图时，隐藏扫一扫图（避免重叠）
+            if (homepageImg.classList.contains('visible')) {
+                scanImg.classList.remove('visible');
+            }
+        });
+
+        // 点击"查看扫一扫"图标
+        scanBtn.addEventListener('click', () => {
+            scanImg.classList.toggle('visible');
+            // 显示扫一扫图时，隐藏主页图
+            if (scanImg.classList.contains('visible')) {
+                homepageImg.classList.remove('visible');
+            }
+        });
+
+        // 4. 移动端图片点击关闭（优化交互：点击已显示的图片可关闭）
+        homepageImg.addEventListener('click', () => {
+            homepageImg.classList.remove('visible');
+        });
+        scanImg.addEventListener('click', () => {
+            scanImg.classList.remove('visible');
+        });
+    </script>
+</body>
+
+</html>

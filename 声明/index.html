@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cc07个人网站</title>
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding-top: 80px;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding-left: 20px;
+            padding-right: 20px;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 120px;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ddd;
+            transition: transform 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar .nickname {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 抖音按钮样式 */
+        .nav-links .douyin-btn {
+            background-color: #000;
+        }
+
+        .nav-links .douyin-btn:hover {
+            background-color: #222;
+        }
+
+        .nav-links a:hover {
+            background-color: #0056b3;
+        }
+
+        .nav-links a.active {
+            background-color: #7241fa;
+        }
+
+        /* 内容区域 */
+        .content {
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        .content h1 {
+            margin: 25px 0;
+            color: #333;
+            font-size: 1.8rem;
+            line-height: 1.5;
+        }
+
+        /* 声明区块 */
+        .statement-block {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            font-size: 0.9rem;
+            color: #333;
+            z-index: 90;
+            cursor: move;
+            user-select: none;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            width: 28px;
+            height: 28px;
+            border: none;
+            background-color: transparent;
+            color: #999;
+            font-size: 1.6rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            z-index: 92;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #dc3545;
+            outline: none;
+        }
+
+        .statement-block p {
+            margin-bottom: 8px;
+            padding-right: 35px;
+        }
+
+        .statement-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 匀速移动文字样式 - 优化动画 */
+        .moving-text {
+            position: absolute;
+            color: rgb(255, 0, 43);
+            font-weight: bold;
+            cursor: default;
+            white-space: nowrap;
+            z-index: 80;
+            /* 优化过渡曲线，确保无卡顿 */
+            transition: left 2s linear, top 2s linear;
+            /* 初始位置避免闪烁 */
+            left: 0;
+            top: 100px;
+        }
+
+        /* 手机端提示 */
+        .pc-tip {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff8e6;
+            color: #d97706;
+            text-align: center;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            border-top: 1px solid #ffeeba;
+            z-index: 99;
+            line-height: 1.4;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 75px;
+                padding-left: 15px;
+                padding-right: 15px;
+                padding-bottom: 100px;
+            }
+
+            .navbar {
+                height: 65px;
+                padding: 0 15px;
+            }
+
+            .logo-container {
+                gap: 8px;
+            }
+
+            .avatar {
+                width: 36px;
+                height: 36px;
+            }
+
+            .navbar .nickname {
+                font-size: 1.2rem;
+            }
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+
+            .content h1 {
+                font-size: 1.4rem;
+                margin: 18px 0;
+            }
+
+            .statement-block {
+                max-width: 250px;
+                font-size: 0.85rem;
+                padding: 12px 15px;
+                bottom: 50px;
+                right: 15px;
+            }
+
+            .pc-tip {
+                display: block;
+            }
+
+            .moving-text {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .navbar .nickname {
+                font-size: 1.1rem;
+            }
+
+            .nav-links {
+                gap: 8px;
+            }
+
+            .nav-links a {
+                padding: 5px 10px;
+                font-size: 0.85rem;
+            }
+
+            .content h1 {
+                font-size: 1.3rem;
+            }
+
+            .statement-block {
+                max-width: 220px;
+                font-size: 0.8rem;
+                padding: 10px 12px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .moving-text {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="logo-container">
+            <img src="抖音头像.jpg" alt="Cc07的头像" class="avatar">
+            <a href="../index.html" class="nickname">跑杀2</a>
+        </div>
+        <div class="nav-links">
+            <a href="../index.html">首页</a>
+            <a href="index.html" class="active">声明</a>
+            <!-- 添加抖音主页按钮 -->
+            <a href="https://v.douyin.com/xvmtN621cWQ/ 4@1.com :8pm" target="_blank" class="douyin-btn">
+
+                访问我的抖音主页
+            </a>
+        </div>
+    </nav>
+
+    <!-- 内容区域 -->
+    <div class="content">
+        <h1>
+            本人做的定制刀基本是<span style="color: red;">默认秋霜</span>(就是进游戏默认手里抓着那把)。
+            <span style="display: none;">接定制🆓！</span>
+        </h1>
+        因为我师傅教我是没收费的，所以不管别人是怎么样，我给你们做刀皮也均是不收费的
+        <br>心情好的话赏我个三瓜两枣
+    </div>
+
+    <!-- 移动文字元素 -->
+    <span class="moving-text">接定制🆓！</span>
+
+    <!-- 可拖动声明区块 -->
+    <div class="statement-block" id="statementBlock">
+        <button class="close-btn" id="closeBtn">&times;</button>
+        <p style="color: red;">本网站的所有内容均为个人创作，不涉及任何商业用途。</p>
+        <p style="color: red;">本网站的所有内容均为个人创作，不涉及任何商业用途。</p>
+        <p style="color: red;">本网站的所有内容均为个人创作，不涉及任何商业用途。</p>
+    </div>
+
+    <!-- 电脑访问提示 -->
+    <div class="pc-tip">
+        建议使用电脑访问本网站，以获得更流畅的浏览体验和更完整的功能展示
+    </div>
+
+    <script>
+        // 声明块关闭功能
+        const closeBtn = document.getElementById('closeBtn');
+        const statementBlock = document.getElementById('statementBlock');
+
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            statementBlock.style.display = 'none';
+        });
+
+        closeBtn.addEventListener('touchstart', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            statementBlock.style.display = 'none';
+        }, { passive: false });
+
+        // 声明块拖动功能
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        statementBlock.addEventListener('mousedown', (e) => {
+            if (e.target !== closeBtn) {
+                isDragging = true;
+                offsetX = e.clientX - statementBlock.getBoundingClientRect().left;
+                offsetY = e.clientY - statementBlock.getBoundingClientRect().top;
+                statementBlock.style.cursor = 'grabbing';
+            }
+        });
+
+        statementBlock.addEventListener('touchstart', (e) => {
+            if (e.target !== closeBtn) {
+                isDragging = true;
+                const touch = e.touches[0];
+                offsetX = touch.clientX - statementBlock.getBoundingClientRect().left;
+                offsetY = touch.clientY - statementBlock.getBoundingClientRect().top;
+                statementBlock.style.cursor = 'grabbing';
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        function handleDragMove(e) {
+            if (!isDragging) return;
+
+            let clientX, clientY;
+            if (e.type === 'mousemove') {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            } else {
+                const touch = e.touches[0];
+                clientX = touch.clientX;
+                clientY = touch.clientY;
+            }
+
+            const maxX = window.innerWidth - statementBlock.offsetWidth;
+            const maxY = window.innerHeight - statementBlock.offsetHeight;
+            const newX = Math.max(0, Math.min(clientX - offsetX, maxX));
+            const newY = Math.max(0, Math.min(clientY - offsetY, maxY));
+
+            statementBlock.style.left = `${newX}px`;
+            statementBlock.style.top = `${newY}px`;
+            statementBlock.style.right = 'auto';
+            statementBlock.style.bottom = 'auto';
+        }
+
+        document.addEventListener('mousemove', handleDragMove);
+        document.addEventListener('touchmove', handleDragMove, { passive: false });
+
+        function endDrag() {
+            isDragging = false;
+            statementBlock.style.cursor = 'move';
+        }
+
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
+
+        // 匀速移动文字功能 - 优化版
+        const movingText = document.querySelector('.moving-text');
+        const navbar = document.getElementById('navbar');
+
+        // 初始化文字大小
+        function initTextSize() {
+            movingText.style.fontSize = window.innerWidth <= 768 ? '1.5rem' : '2rem';
+        }
+
+        // 生成随机目标位置（优化边界计算，避免文字出界）
+        function getRandomTargetPosition() {
+            // 先确保获取到最新的文字尺寸
+            movingText.style.visibility = 'hidden'; // 临时隐藏避免闪烁
+            const textRect = movingText.getBoundingClientRect();
+            movingText.style.visibility = 'visible';
+
+            const textWidth = textRect.width;
+            const textHeight = textRect.height;
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const navbarHeight = navbar.offsetHeight;
+
+            // 安全边界：上下左右各留10px间距
+            const maxX = windowWidth - textWidth - 10;
+            const maxY = windowHeight - textHeight - 10;
+            const minY = navbarHeight + 10;
+            const minX = 10;
+
+            // 生成随机位置（确保在安全区域内）
+            const randomX = Math.floor(Math.random() * (maxX - minX)) + minX;
+            const randomY = Math.floor(Math.random() * (maxY - minY)) + minY;
+
+            return { left: randomX, top: randomY };
+        }
+
+        // 优化动画循环逻辑 - 监听过渡结束事件，避免时间差导致卡顿
+        function moveToRandomPosition() {
+            const targetPosition = getRandomTargetPosition();
+
+            // 应用目标位置
+            movingText.style.left = `${targetPosition.left}px`;
+            movingText.style.top = `${targetPosition.top}px`;
+        }
+
+        // 监听过渡结束事件，无缝衔接下一次移动
+        movingText.addEventListener('transitionend', () => {
+            // 延迟0ms立即触发下一次移动，实现无缝循环
+            requestAnimationFrame(moveToRandomPosition);
+        });
+
+        // 窗口大小变化时重新适配
+        window.addEventListener('resize', () => {
+            initTextSize();
+            // 立即调整位置，避免窗口变化后文字出界
+            const targetPosition = getRandomTargetPosition();
+            // 临时关闭过渡，避免窗口缩放时的动画卡顿
+            movingText.style.transition = 'none';
+            movingText.style.left = `${targetPosition.left}px`;
+            movingText.style.top = `${targetPosition.top}px`;
+            // 恢复过渡
+            setTimeout(() => {
+                movingText.style.transition = 'left 2s linear, top 2s linear';
+            }, 50);
+        });
+
+        // 页面加载后初始化并启动动画
+        window.addEventListener('load', () => {
+            initTextSize();
+            // 初始位置设置
+            const initialPosition = getRandomTargetPosition();
+            movingText.style.left = `${initialPosition.left}px`;
+            movingText.style.top = `${initialPosition.top}px`;
+
+            // 启动第一次动画（延迟2秒，与过渡时间一致）
+            setTimeout(moveToRandomPosition, 2000);
+        });
+    </script>
+</body>
+
+</html>

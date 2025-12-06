@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cc07个人网站</title>
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding-top: 80px;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding-left: 20px;
+            padding-right: 20px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* 导航栏（统一样式） */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            /* 统一高度 */
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            /* 统一内边距 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            /* 统一间距 */
+        }
+
+        .avatar {
+            width: 40px;
+            /* 统一头像大小 */
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ddd;
+            transition: transform 0.3s ease;
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .navbar .nickname {
+            font-size: 1.5rem;
+            /* 统一昵称字体大小 */
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            /* 统一链接间距 */
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            padding: 8px 16px;
+            /* 统一按钮内边距 */
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 1rem;
+            /* 统一链接字体大小 */
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+
+        /* 抖音链接特殊样式（保持协调但有辨识度） */
+        .nav-links a.douyin-link {
+            background-color: #000;
+        }
+
+        .nav-links a.douyin-link:hover {
+            background-color: #333;
+        }
+
+        .nav-links a:hover {
+            background-color: #0056b3;
+        }
+
+        .nav-links a.active {
+            background-color: #7241fa;
+        }
+
+        /* 内容区域 */
+        .content {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px 0;
+        }
+
+        .content h1 {
+            margin: 18px 0;
+            color: #333;
+            font-size: 1.4rem;
+            line-height: 1.4;
+        }
+
+        .content p {
+            font-size: 0.95rem;
+            color: #444;
+            margin-bottom: 12px;
+        }
+
+        /* 联系方式样式 */
+        .contact-link {
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.3s, background-color 0.3s;
+            font-weight: 500;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+
+        .contact-link:hover {
+            color: #0056b3;
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+
+        /* 抖音号样式 */
+        .douyin-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        .douyin-id {
+            cursor: pointer;
+            color: #007bff;
+            padding: 2px 5px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .douyin-id:hover {
+            color: #0056b3;
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+
+        /* 抖音跳转按钮样式 */
+        .douyin-btn {
+            text-decoration: none;
+            color: white;
+            background-color: #000;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+
+        .douyin-btn:hover {
+            background-color: #333;
+        }
+
+        /* 复制提示框 */
+        .copy-toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background-color: #000;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .copy-toast.error {
+            background-color: #dc3545;
+            box-shadow: 0 3px 10px rgba(220, 53, 69, 0.2);
+        }
+
+        /* 手机访问提示 */
+        .mobile-tip {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff8e6;
+            color: #d97706;
+            text-align: center;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            border-top: 1px solid #ffeeba;
+            z-index: 999;
+            line-height: 1.4;
+        }
+
+        /* 响应式适配（统一导航栏） */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 75px;
+                padding-left: 15px;
+                padding-right: 15px;
+                padding-bottom: 60px;
+            }
+
+            .navbar {
+                height: 65px;
+                /* 移动端统一高度 */
+                padding: 0 15px;
+                /* 移动端统一内边距 */
+            }
+
+            .logo-container {
+                gap: 8px;
+                /* 移动端统一间距 */
+            }
+
+            .avatar {
+                width: 36px;
+                /* 移动端统一头像大小 */
+                height: 36px;
+            }
+
+            .navbar .nickname {
+                font-size: 1.2rem;
+                /* 移动端统一昵称大小 */
+            }
+
+            .nav-links {
+                gap: 10px;
+                /* 移动端统一链接间距 */
+            }
+
+            .nav-links a {
+                padding: 6px 12px;
+                /* 移动端统一按钮内边距 */
+                font-size: 0.9rem;
+                /* 移动端统一链接字体 */
+            }
+
+            .content h1 {
+                font-size: 1.3rem;
+                margin: 15px 0;
+            }
+
+            .mobile-tip {
+                display: block;
+            }
+
+            .copy-toast {
+                top: 70px;
+            }
+
+            .douyin-wrap {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .navbar .nickname {
+                font-size: 1.1rem;
+            }
+
+            .nav-links {
+                gap: 8px;
+            }
+
+            .nav-links a {
+                padding: 5px 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="抖音头像.jpg" alt="Cc07的头像" class="avatar">
+            <a href="index.html" class="nickname">跑杀2</a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="active">首页</a>
+            <a href="./声明/index.html">声明</a>
+            <!-- 新增抖音主页跳转链接 -->
+            <a href="https://v.douyin.com/xvmtN621cWQ/ 4@1.com :8pm" target="_blank" class="douyin-link">访问我的抖音主页</a>
+        </div>
+    </nav>
+
+    <!-- 复制提示框 -->
+    <div class="copy-toast" id="copyToast">复制成功！</div>
+
+    <!-- 内容区域 -->
+    <div class="content">
+        <h1>欢迎来到跑杀2的个人网站</h1>
+        <p style="color: #000;">本站是关于制作<span style="color: #ea1203;">幽灵行者1</span>定制刀的，需要<span
+                style="color: #ea1203;"><strong>默认秋霜刻字</strong></span>添加我即可<br>点击下方QQ或WX即可复制并添加我的联系方式
+        </p>
+
+        <h1><span class="contact-link" data-copy="2679928465">QQ:2679928465</span></h1>
+        <h1><span class="contact-link" data-copy="18170378345">WX:18170378345</span></h1>
+
+
+    </div>
+
+    <!-- 手机访问提示 -->
+    <div class="mobile-tip">
+        建议使用电脑访问本网站，以获得更流畅的浏览体验和更完整的功能展示
+    </div>
+
+    <script>
+        // 复制功能封装
+        function copyToClipboard(text, successMsg, errorMsg) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    const toast = document.getElementById('copyToast');
+                    toast.textContent = successMsg;
+                    toast.className = 'copy-toast show';
+                    setTimeout(() => toast.classList.remove('show'), 3000);
+                })
+                .catch(err => {
+                    console.error('复制失败:', err);
+                    const toast = document.getElementById('copyToast');
+                    toast.textContent = errorMsg;
+                    toast.className = 'copy-toast error show';
+                    setTimeout(() => toast.classList.remove('show'), 3000);
+                });
+        }
+
+        // 绑定QQ/WX复制事件
+        document.querySelectorAll('.contact-link').forEach(link => {
+            link.addEventListener('click', function () {
+                const copyText = this.getAttribute('data-copy');
+                const type = this.textContent.includes('QQ') ? 'QQ' : '微信';
+                copyToClipboard(copyText, `${type}已复制！`, `复制失败，请手动复制${type}！`);
+            });
+        });
+    </script>
+</body>
+
+</html>
